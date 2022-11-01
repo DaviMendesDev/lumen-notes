@@ -30,3 +30,11 @@ services:
 #    build:
 #      context: ./docker/php/
 
+  postgres:
+    image: postgres
+    environment:
+      - POSTGRES_DB=notes-db
+      - POSTGRES_PASSWORD=admin123
+    ports:
+      - "5433:5432"
+
