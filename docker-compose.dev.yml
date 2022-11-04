@@ -4,6 +4,7 @@ services:
   nginx:
     image: nginx:latest
     container_name: notes-nginx
+    working_dir: /var/www/html
     build:
       context: ./docker/nginx/
     ports:
@@ -31,10 +32,17 @@ services:
 #      context: ./docker/php/
 
   postgres:
+    container_name: notes-postgres
     image: postgres
     environment:
       - POSTGRES_DB=notes-db
       - POSTGRES_PASSWORD=admin123
     ports:
       - "5433:5432"
+
+  redis:
+    image: redis
+    container_name: notes-redis
+    ports:
+      - "6380:6379"
 
