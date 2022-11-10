@@ -35,7 +35,8 @@ RUN yes | apt-get update && \
     php8.1-common \
     php8.1-gd \
     php8.1-redis \
-    php8.1-mbstring
+    php8.1-mbstring \
+    php8.1-sqlite
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
@@ -43,4 +44,3 @@ RUN mkdir -p /run/php/
 RUN touch /run/php/php8.1-fpm.sock
 RUN chmod 755 /run/php/php8.1-fpm.sock
 RUN chown nginx:nginx /run/php/php8.1-fpm.sock
-
