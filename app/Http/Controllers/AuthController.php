@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SignUpRequest;
 use App\Models\User;
+use App\Services\Auth\SignUpService;
 use App\Services\Common\AuthService;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -20,13 +21,9 @@ class AuthController extends Controller
         return $authService->signin($email, $password);
     }
 
-    public function signup(Request $req, SignUpRequest $form)
+    public function signup(Request $req, SignUpService $signUpService)
     {
-        $credentials = $form->validate($req->json()->all());
-
-        $user = new User($credentials);
-        $user->password = Hash::make($credentials['password']);
-        $user->save();
+        $signUpService->insertUserBy($req->json()->all(), app(SignUpRequest::class));
 
         return "User save successfully.";
     }
