@@ -16,8 +16,9 @@ use Laravel\Lumen\Http\Request;
 class AuthService
 {
     /**
-     * @param $credentials array
-     * @return string
+     * @param string $email
+     * @param string $password
+     * @return array
      */
     public function signin(string $email, string $password): array {
         if (! $user = User::where('email', $email)->first()) {
@@ -37,7 +38,7 @@ class AuthService
         ];
     }
 
-    private function genAccessToken(Authenticatable $user, string $refreshTokenId)
+    private function genAccessToken(Authenticatable $user, string $refreshTokenId): string
     {
         $payload = [
             'sub' => $user->getAuthIdentifier(),
@@ -77,7 +78,7 @@ class AuthService
         ];
     }
 
-    private function storeRefreshToken(string $uuid, string $token)
+    private function storeRefreshToken(string $uuid, string $token): static
     {
         Cache::store('redis')->set($uuid, $token, config('jwt.refresh.ttl'));
 
@@ -106,7 +107,7 @@ class AuthService
         return $user;
     }
 
-    public function refresh(string $refreshToken)
+    public function refresh(string $refreshToken): string
     {
         // TODO: make sure to validate "refreshToken"
         $refreshTokenPayload = JWT::decode(
