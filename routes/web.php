@@ -19,7 +19,3 @@ $router->get('/', function () use ($router) {
 
 $router->post('/login', 'AuthController@login');
 $router->post('/signup', 'AuthController@signup');
-
-$router->post('/test', function (\Laravel\Lumen\Http\Request $req, \App\Services\Common\AuthService $a) {
-    return 'Hello, World.';
-});
