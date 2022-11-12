@@ -46,6 +46,7 @@ class AuthServiceTest extends TestCase
     public function refresh_call_should_return_new_valid_access_token()
     {
         /** @var $authService AuthService */
+        $this->createAuthenticatedUser();
         $authService = app(AuthService::class);
         $accessToken = $authService->refresh(
             Cache::store('redis')->get('test.refreshToken')
