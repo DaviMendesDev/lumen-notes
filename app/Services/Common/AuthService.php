@@ -94,17 +94,13 @@ class AuthService
 
     public function authenticate(string $accessToken): Authenticatable|null
     {
-        $payload = JWT::decode($accessToken, config('jwt.secret', 'secret'));
+        $payload = JWT::decode($accessToken, new Key(config('jwt.secret', 'secret'), 'HS256'));
 
-        if (! $userId = $payload['sub']) {
+        if (! $userId = $payload->sub) {
             throw new UnauthorizedException("Token invalid!");
         }
 
-        if (! $user = User::find($userId)) {
-            throw new UnauthorizedException("User is not activated at all.");
-        }
-
-        return $user;
+        return User::findOrFail($userId);
     }
 
     public function refresh(string $refreshToken): string
