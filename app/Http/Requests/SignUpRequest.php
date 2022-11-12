@@ -14,9 +14,4 @@ class SignUpRequest extends FormValidator
             'password' => 'required|string|max:120',
         ];
     }
-
-    public function authorize(): bool
-    {
-        return true;
-    }
 }
