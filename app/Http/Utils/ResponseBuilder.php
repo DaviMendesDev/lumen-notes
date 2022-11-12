@@ -4,9 +4,14 @@ namespace App\Http\Utils;
 
 use Carbon\Carbon;
 
-class ResponseMaker
+class ResponseBuilder
 {
-    protected \Illuminate\Http\Response|\Laravel\Lumen\Http\ResponseFactory $response;
+    protected \Laravel\Lumen\Http\ResponseFactory|\Illuminate\Http\Response $response;
+
+    public function __construct()
+    {
+        $this->response = response();
+    }
 
     public function success(string $message, array $data = []): \Illuminate\Http\JsonResponse
     {
@@ -39,7 +44,7 @@ class ResponseMaker
                 'data' => $data,
             ],
             $status,
-            $this->response->headers
+            $this->response->headers ?? []
         );
     }
 }
