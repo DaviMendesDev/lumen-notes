@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Note;
 use App\Models\User;
+use App\Policies\NotePolicy;
 use App\Services\Common\AuthService;
 use Firebase\JWT\JWT;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -35,12 +37,17 @@ class AuthServiceProvider extends ServiceProvider
         // should return either a User instance or null. You're free to obtain
         // the User instance via an API token or any other method necessary.
 
-        $this->app['auth']->viaRequest('api', function (Request $request, AuthService $auth) {
+        $this->app['auth']->viaRequest('api', function (Request $request) {
+            /** @var AuthService $auth */
+            $auth = app(AuthService::class);
+
             if (! $accessToken = $request->bearerToken()) {
                 throw new AuthenticationException('Access Token not provided!');
             }
 
             return $auth->authenticate($accessToken);
         });
+
+        Gate::policy(Note::class, NotePolicy::class);
     }
 }
