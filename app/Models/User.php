@@ -48,4 +48,34 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         return $this->hasMany(Note::class);
     }
+
+    public function writeNewNote(string $title, string $content)
+    {
+        $this->notes()->create([
+            'title' => $title,
+            'content' => $content
+        ]);
+    }
+
+    public function writeInto(Note $note, string $content): bool
+    {
+        $note->content = $content;
+        return $note->save();
+    }
+
+    public function changeTitle(Note $note, string $title): bool
+    {
+        $note->title = $title;
+        return $note->save();
+    }
+
+    public function sendToTrash(Note $note): ?bool
+    {
+        return $note->delete();
+    }
+
+    public function isMine(Note $note): bool
+    {
+        return $this->id === $note->owner->id;
+    }
 }
