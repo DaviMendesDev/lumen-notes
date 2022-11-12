@@ -19,3 +19,13 @@ $router->get('/', function () use ($router) {
 
 $router->post('/login', 'AuthController@login');
 $router->post('/signup', 'AuthController@signup');
+
+$router->group([ 'middleware' => 'auth' ], function() use ($router) {
+    // notes
+    $router->group([ 'prefix' => 'notes' ], function () use ($router) {
+        $router->get('me', 'NotesController@me');
+        $router->post('create', 'NotesController@create');
+        $router->put('{note}', 'NotesController@update');
+        $router->delete('{note}', 'NotesController@delete');
+    });
+});
