@@ -2,20 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Utils\ResponseMaker;
+use App\Http\Utils\ResponseBuilder;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
 class Controller extends BaseController
 {
     /**
-     * @var \Laravel\Lumen\Application|mixed
+     * @var ResponseBuilder
      */
-    protected mixed $responseMaker;
+    protected mixed $response;
 
-    public function __construct()
+    public function __construct(ResponseBuilder $responseBuilder)
     {
-        $this->responseMaker = app(ResponseMaker::class);
+        $this->response = $responseBuilder;
     }
-
-
 }
