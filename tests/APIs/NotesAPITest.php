@@ -106,6 +106,7 @@ class NotesAPITest extends TestCase
         /** @var User $user */
         $user = $this->createAuthenticatedUser();
         $user->writeNewNote('untitled', '');
+        $this->assertNotEmpty($user->notes()->get()->toArray());
 
         $this->json('delete', '/notes/' . $user->notes()->firstOrFail()->id, [], [
             'Authorization' => 'Bearer ' . $this->getAccessToken()
