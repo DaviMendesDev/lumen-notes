@@ -27,4 +27,20 @@ class AuthController extends Controller
 
         return "User save successfully.";
     }
+
+    public function guest(SignUpService $service)
+    {
+        $guestUser = $service->makeGuest();
+
+        /** @var AuthService $authService */
+        $authService = app(AuthService::class);
+
+        // because guest user authenticate from
+        $tokens = $authService->signin($guestUser->email, $guestUser->email);
+
+        return $this->response->success('guest user created.', [
+            'guestUser' => $guestUser,
+            'tokens' => $tokens,
+        ]);
+    }
 }

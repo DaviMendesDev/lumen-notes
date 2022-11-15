@@ -78,4 +78,14 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         return $this->id === $note->owner->id;
     }
+
+    public function guest(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Guest::class, 'user_id');
+    }
+
+    public function isGuest(): bool
+    {
+        return $this->guest()->exists();
+    }
 }

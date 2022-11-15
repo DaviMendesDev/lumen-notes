@@ -19,6 +19,7 @@ $router->get('/', function () use ($router) {
 
 $router->post('/login', 'AuthController@login');
 $router->post('/signup', 'AuthController@signup');
+$router->post('/guest', 'AuthController@guest');
 
 $router->group([ 'middleware' => 'auth' ], function() use ($router) {
     // notes
