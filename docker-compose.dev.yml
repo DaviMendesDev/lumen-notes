@@ -1,4 +1,4 @@
-version: "3"
+version: "3.9"
 
 services:
   nginx:
@@ -16,6 +16,8 @@ services:
     environment:
       - NGINX_HOST=lumen.notes.com
       - NGINX_PORT=80
+    networks:
+      - notes_default_network
 
 #  php-fpm:
 #    image: php:fpm
@@ -39,10 +41,17 @@ services:
       - POSTGRES_PASSWORD=admin123
     ports:
       - "5433:5432"
+    networks:
+      - notes_default_network
 
   redis:
     image: redis
     container_name: notes-redis
     ports:
       - "6380:6379"
+    networks:
+      - notes_default_network
 
+networks:
+  notes_default_network:
+    name: notes_default_network
