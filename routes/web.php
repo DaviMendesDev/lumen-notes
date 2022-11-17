@@ -22,6 +22,7 @@ $router->post('/signup', 'AuthController@signup');
 $router->post('/guest', 'AuthController@guest');
 
 $router->group([ 'middleware' => 'auth' ], function() use ($router) {
+    $router->get('/me', 'AuthController@me');
     // notes
     $router->group([ 'prefix' => 'notes' ], function () use ($router) {
         $router->get('me', 'NotesController@me');

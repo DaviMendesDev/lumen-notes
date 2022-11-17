@@ -6,6 +6,7 @@ use App\Http\Requests\SignUpRequest;
 use App\Models\User;
 use App\Services\Auth\SignUpService;
 use App\Services\Common\AuthService;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Lumen\Http\Request;
@@ -39,8 +40,14 @@ class AuthController extends Controller
         $tokens = $authService->signin($guestUser->email, $guestUser->email);
 
         return $this->response->success('guest user created.', [
-            'guestUser' => $guestUser,
-            'tokens' => $tokens,
+            'user' => $guestUser,
+            'accessToken' => $tokens['access'],
+            'refreshToken' => $tokens['refresh'],
         ]);
+    }
+
+    public function me()
+    {
+        return $this->response->success('user\'s data.', Auth::user()->getAttributes());
     }
 }
