@@ -4,7 +4,9 @@ namespace App\Providers;
 
 use App\Models\Note;
 use App\Models\User;
+use App\Models\Workspace;
 use App\Policies\NotePolicy;
+use App\Policies\WorkspacePolicy;
 use App\Services\Common\AuthService;
 use Firebase\JWT\JWT;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -49,5 +51,6 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::policy(Note::class, NotePolicy::class);
+        Gate::policy(Workspace::class, WorkspacePolicy::class);
     }
 }

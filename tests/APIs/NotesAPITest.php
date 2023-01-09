@@ -15,7 +15,7 @@ class NotesAPITest extends TestCase
         /** @var User $user */
         $user = $this->createAuthenticatedUser();
 
-        $user->writeNewNote('untitled', 'any-content');
+        $user->withWorkspace($this->defaultWorkspace())->writeNewNote('untitled', 'any-content');
         $this->json('get', '/notes/me', [], [
             'Authorization' => 'Bearer ' . $this->getAccessToken()
         ]);
@@ -29,12 +29,10 @@ class NotesAPITest extends TestCase
             'data' => [
                 '*' => [
                     'id',
-                    'user_id',
+                    'creator_id',
                     'title',
-                    'content',
                     'created_at',
-                    'updated_at',
-                    'deleted_at',
+                    'updated_at'
                 ]
             ],
         ]);
@@ -74,15 +72,16 @@ class NotesAPITest extends TestCase
     {
         /** @var User $user */
         $user = $this->createAuthenticatedUser();
-        $user->writeNewNote('untitled', '');
+        $user->withWorkspace($this->defaultWorkspace())->writeNewNote('untitled', '');
 
-        $this->json('put', '/notes/' . $user->notes()->firstOrFail()->id, [
+        $this->json('put', '/workspaces/' . $this->defaultWorkspace()->id . '/notes/' . $user->notes()->firstOrFail()->id, [
             'title' => 'my new title',
             'content' => 'my content',
         ], [
             'Authorization' => 'Bearer ' . $this->getAccessToken()
         ]);
 
+        $this->assertEquals('asdf', $this->response->getContent());
         $this->assertResponseOk();
         $this->response->assertJsonStructure([
             'message',
@@ -105,7 +104,8 @@ class NotesAPITest extends TestCase
     {
         /** @var User $user */
         $user = $this->createAuthenticatedUser();
-        $user->writeNewNote('untitled', '');
+        $user->prepareNewWorkspace('My workspace');
+        $user->withWorkspace($this->defaultWorkspace())->writeNewNote('untitled', '');
         $this->assertNotEmpty($user->notes()->get()->toArray());
 
         $this->json('delete', '/notes/' . $user->notes()->firstOrFail()->id, [], [

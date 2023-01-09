@@ -3,6 +3,7 @@
 namespace Tests;
 
 use App\Models\User;
+use App\Models\Workspace;
 use App\Services\Common\AuthService;
 use Illuminate\Support\Facades\Cache;
 use Laravel\Lumen\Testing\DatabaseMigrations;
@@ -11,6 +12,8 @@ use Laravel\Lumen\Testing\TestCase as BaseTestCase;
 abstract class TestCase extends BaseTestCase
 {
     use DatabaseMigrations;
+
+    protected ?User $user = null;
 //    static $migrationRun = false;
 
     /**
@@ -27,14 +30,14 @@ abstract class TestCase extends BaseTestCase
     {
         /** @var AuthService $authService */
         $authService = app(AuthService::class);
-        $user = User::factory()->createOne();
+        $this->user = User::factory()->createOne();
 
-        $tokens = $authService->signin($user->email, 'admin123');
+        $tokens = $authService->signin($this->user->email, 'admin123');
 
         Cache::store('redis')->set('test.refreshToken', $tokens['refresh'], 30);
         Cache::store('redis')->set('test.accessToken', $tokens['access'], 30);
 
-        return $user;
+        return $this->user;
     }
 
     protected function getAccessToken()
@@ -45,6 +48,19 @@ abstract class TestCase extends BaseTestCase
     protected function getRefreshToken()
     {
         return Cache::store('redis')->get('test.refreshToken');
+    }
+
+    protected function defaultWorkspace(): Workspace|null
+    {
+        if (! $this->user) {
+            throw new \Exception("User not instanciated");
+        }
+
+        if (! $this->user->workspaces()->first()) {
+            $this->user->prepareNewWorkspace('My Workspace Example');
+        }
+
+        return $this->user->workspaces()->firstOrFail();
     }
 
 //    protected function setUp(): void

@@ -3,15 +3,13 @@
 namespace App\Services\Common;
 
 use App\Models\User;
-use Carbon\Carbon;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\UnauthorizedException;
-use Laravel\Lumen\Http\Request;
 
 class AuthService
 {
@@ -63,7 +61,7 @@ class AuthService
             'sub' => $user->getAuthIdentifier(),
             'iss' => \request()->header('host'),
             'aud' => config('app.url'),
-            'exp' => Carbon::now()->addDays(30)->timestamp,
+//            'exp' => Carbon::now()->addDays(30)->timestamp,
             'iat' => time(),
             'jti' => $jti,
         ];
@@ -80,7 +78,7 @@ class AuthService
 
     private function storeRefreshToken(string $uuid, string $token): static
     {
-        Cache::store('redis')->set($uuid, $token, config('jwt.refresh.ttl'));
+        Cache::store('redis')->set($uuid, $token);
 
         return $this;
     }

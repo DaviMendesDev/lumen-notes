@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
-class UpdateNoteRequest extends FormValidator
+class WriteIntoNoteRequest extends FormValidator
 {
     public function rules(): array
     {

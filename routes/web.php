@@ -17,17 +17,29 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-$router->post('/login', 'AuthController@login');
-$router->post('/signup', 'AuthController@signup');
-$router->post('/guest', 'AuthController@guest');
+$router->post('login', 'AuthController@login');
+$router->post('signup', 'AuthController@signup');
+$router->post('guest', 'AuthController@guest');
+$router->post('refresh', 'AuthController@refresh');
 
 $router->group([ 'middleware' => 'auth' ], function() use ($router) {
     $router->get('/me', 'AuthController@me');
-    // notes
-    $router->group([ 'prefix' => 'notes' ], function () use ($router) {
-        $router->get('me', 'NotesController@me');
-        $router->post('create', 'NotesController@create');
-        $router->put('{note}', 'NotesController@update');
-        $router->delete('{note}', 'NotesController@delete');
+
+    $router->get('notes/me', 'NotesController@me');
+
+    // workspaces
+    $router->group([ 'prefix' => 'workspaces'], function () use ($router) {
+        $router->get('list', 'WorkspacesController@list');
+        $router->post('create', 'WorkspacesController@create');
+        $router->get('{workspace}/roles', 'WorkspacesController@roles');
+        $router->get('{workspace}/members', 'WorkspacesController@members');
+
+        $router->group([ 'prefix' => '{workspace}/notes' ], function () use ($router) {
+            $router->get('me', 'NotesController@me');
+            $router->get('{note}', 'NotesController@show');
+            $router->post('create', 'NotesController@create');
+            $router->put('{note}', 'NotesController@writeInto');
+            $router->delete('{note}', 'NotesController@delete');
+        });
     });
 });

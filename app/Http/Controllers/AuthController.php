@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Services\Auth\SignUpService;
 use App\Services\Common\AuthService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Lumen\Http\Request;
@@ -26,7 +27,9 @@ class AuthController extends Controller
     {
         $signUpService->insertUserBy($req->json()->all(), app(SignUpRequest::class));
 
-        return "User save successfully.";
+        return $this->response->success('User saved successfully.', [
+            'user' => User::query()->where('email', $req->json('email'))->firstOrFail(),
+        ]);
     }
 
     public function guest(SignUpService $service)
@@ -43,6 +46,15 @@ class AuthController extends Controller
             'user' => $guestUser,
             'accessToken' => $tokens['access'],
             'refreshToken' => $tokens['refresh'],
+        ]);
+    }
+
+    public function refresh(AuthService $authService)
+    {
+        return $this->response->success('access token refreshed.', [
+            'accessToken' => $authService->refresh(
+                \request()->json('refreshToken')
+            )
         ]);
     }
 
